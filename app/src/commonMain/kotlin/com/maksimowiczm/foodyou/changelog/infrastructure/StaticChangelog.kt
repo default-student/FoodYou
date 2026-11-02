@@ -5,9 +5,14 @@ import com.maksimowiczm.foodyou.changelog.domain.Version
 import com.maksimowiczm.foodyou.common.config.AppConfig
 import kotlinx.datetime.LocalDate
 
+private val forkReleaseSuffix = Regex("""-fork\.\d+$""")
+
 internal class StaticChangelog(private val appConfig: AppConfig) : Changelog {
     override val currentVersion: Version?
-        get() = versions.firstOrNull { it.version == appConfig.versionName }
+        get() =
+            versions.firstOrNull {
+                it.version == forkReleaseSuffix.replace(appConfig.versionName, "")
+            }
 
     override val versions: List<Version>
         get() =
