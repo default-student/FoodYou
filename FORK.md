@@ -12,11 +12,13 @@ The same workflow publishes a signed APK for pushes to `main` and manual runs. F
 
 Before enabling Actions or pushing the initial `main` branch, add these repository Actions secrets for the fork's stable release key:
 
-- `FOODYOU_KEYSTORE_BASE64`: base64-encoded fork JKS file
-- `FOODYOU_KEYSTORE_PASSWORD`: JKS store password
+- `FOODYOU_KEYSTORE_BASE64`: base64-encoded fork keystore
+- `FOODYOU_KEYSTORE_PASSWORD`: keystore password
 - `FOODYOU_KEY_PASSWORD`: key password
 
-The key alias is fixed in the workflow as `foodyou-fork-release`. Keep the JKS and passwords private and backed up. Never replace the key after publishing, or Android will reject updates to the installed fork. Keep GitHub Actions enabled with workflow permission to write contents and releases.
+The key alias is fixed in the workflow as `foodyou-fork-release`. The local `foodyou-fork-release.jks` file uses PKCS12 format, whose private key uses the store password. Set both password secrets to that same value. Validate signing with `apksigner`; `keytool -list` only verifies that the store can be opened and does not prove that the configured private-key password works.
+
+Keep the keystore and passwords private and backed up. Never replace the key after publishing, or Android will reject updates to the installed fork. Keep GitHub Actions enabled with workflow permission to write contents and releases.
 
 To upload the ignored local signing files with GitHub CLI, run these commands from the repository root in a shell with `gh` authenticated to the fork owner. They send values through standard input and do not print them:
 
