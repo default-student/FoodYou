@@ -117,6 +117,8 @@ jobs:
       - name: Set up Android SDK
         if: steps.release.outputs.build == 'true'
         uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
       - name: Install Android build tools
         if: steps.release.outputs.build == 'true'
