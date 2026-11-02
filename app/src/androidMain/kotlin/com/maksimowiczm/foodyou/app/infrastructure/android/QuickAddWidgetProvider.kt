@@ -20,8 +20,8 @@ class QuickAddWidgetProvider : AppWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.quick_add_widget)
             val intent =
                 Intent(context, MainActivity::class.java).apply {
-                    action = ACTION_QUICK_ADD
-                    data = Uri.parse("foodyou://widget/quick-add/$appWidgetId")
+                    action = ACTION_ADD_MEAL
+                    data = Uri.parse("foodyou://widget/add-meal/$appWidgetId")
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
             val pendingIntent =
@@ -38,6 +38,6 @@ class QuickAddWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
-        const val ACTION_QUICK_ADD = "com.defaultstudent.foodyou.action.QUICK_ADD"
+        const val ACTION_ADD_MEAL = "com.defaultstudent.foodyou.action.ADD_MEAL"
     }
 }

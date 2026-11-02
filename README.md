@@ -42,7 +42,7 @@ The fork uses a separate Android package ID (`com.defaultstudent.foodyou`) and s
   calories and macros but also vitamins, minerals, and other essential nutrients
 - 🍲 **Recipe Creation** – Create custom recipes by combining foods, with nutrition calculated
   instantly
-- 🏠 **Quick meal widget** – Open the existing quick-add form from the launcher with the current
+- 🏠 **Meal entry widget** – Open the normal food search screen from the launcher with the current
   meal selected
 - 🎨 **Material You Design** – Adaptive theming and modern UI
 
@@ -53,10 +53,10 @@ Want to help make Food You even better? Here are some great ways to contribute:
 - 🌍 **Translate the App** – Help improve international accessibility
   via [Crowdin](https://crowdin.com/project/food-you). Let me know if you'd like to credited
 - 💡 **Request a Feature** – Got an idea? Open
-  a [GitHub issue](https://github.com/maksimowiczm/FoodYou/issues) to suggest a new feature or
+  a [GitHub issue](https://github.com/default-student/FoodYou/issues) to suggest a new feature or
   improvement
 - 🐞 **Report Bugs** – Found a bug? Submit it
-  via [GitHub issue](https://github.com/maksimowiczm/FoodYou/issues) so it can be fixed
+  via [GitHub issue](https://github.com/default-student/FoodYou/issues) so it can be fixed
 - ⭐ **Star the Repository** – If you like the project, give it a star
 
 For the original project's contribution policy and support options, see the

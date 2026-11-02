@@ -1,8 +1,8 @@
 # Food You Fork
 
-This is an unofficial fork of [Food You](https://github.com/maksimowiczm/FoodYou), licensed under GPL-3.0-or-later. It retains the upstream source and attribution and adds a launcher widget for opening the existing quick meal-entry form.
+This is an unofficial fork of [Food You](https://github.com/maksimowiczm/FoodYou), licensed under GPL-3.0-or-later. It retains the upstream source and attribution and adds a launcher widget for opening the normal food search flow.
 
-The widget opens the app's existing quick-add form and chooses the meal whose configured time range matches the current local time. If none matches, it falls back to the most recently started meal or the first meal. Saving uses Food You's existing diary repository and does not create placeholder entries.
+The widget opens the app's existing food search screen and chooses the meal whose configured time range matches the current local time. If none matches, it falls back to the most recently started meal or the first meal. Selecting a food continues through Food You's normal diary entry flow.
 
 ## Upstream updates and releases
 

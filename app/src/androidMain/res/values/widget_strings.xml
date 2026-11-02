@@ -2,5 +2,5 @@
     <string name="quick_add_widget_name">Quick meal entry</string>
     <string name="quick_add_widget_title">Add a meal</string>
     <string name="quick_add_widget_subtitle">Tap to get started</string>
-    <string name="quick_add_widget_description">Opens quick meal entry for the meal matching the current time.</string>
+    <string name="quick_add_widget_description">Opens food search for the meal matching the current time.</string>
 </resources>

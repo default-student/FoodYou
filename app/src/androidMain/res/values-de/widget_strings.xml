@@ -2,5 +2,5 @@
     <string name="quick_add_widget_name">Mahlzeit schnell eintragen</string>
     <string name="quick_add_widget_title">Mahlzeit eintragen</string>
     <string name="quick_add_widget_subtitle">Tippen, um direkt loszulegen</string>
-    <string name="quick_add_widget_description">Öffnet die schnelle Mahlzeiteneingabe für die aktuell passende Mahlzeit.</string>
+    <string name="quick_add_widget_description">Öffnet die Lebensmittelsuche für die aktuell passende Mahlzeit.</string>
 </resources>

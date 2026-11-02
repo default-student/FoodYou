@@ -54,15 +54,15 @@ import org.koin.compose.koinInject
 @Composable
 fun FoodYouAppNavHost(
     onDatabaseBackup: () -> Unit,
-    quickAddWidgetRequest: Long = 0L,
+    mealEntryWidgetRequest: Long = 0L,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
     val mealRepository = koinInject<MealRepository>()
     val dateProvider = koinInject<DateProvider>()
 
-    LaunchedEffect(quickAddWidgetRequest) {
-        if (quickAddWidgetRequest == 0L) return@LaunchedEffect
+    LaunchedEffect(mealEntryWidgetRequest) {
+        if (mealEntryWidgetRequest == 0L) return@LaunchedEffect
 
         val now = dateProvider.now()
         val meals = mealRepository.observeMeals().first()
@@ -75,8 +75,8 @@ fun FoodYouAppNavHost(
             navController.navigateSingleTop(MealSetup)
         } else {
             navController.navigateSingleTop(
-                FoodDiaryCreateQuickAdd(
-                    epochDay = now.date.toEpochDays(),
+                FoodDiarySearch(
+                    date = now.date.toEpochDays(),
                     mealId = selectedMeal.id,
                 )
             )

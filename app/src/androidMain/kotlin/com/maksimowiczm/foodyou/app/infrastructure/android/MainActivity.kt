@@ -9,15 +9,15 @@ import com.maksimowiczm.foodyou.app.ui.FoodYouApp
 
 class MainActivity : FoodYouAbstractActivity() {
 
-    private var quickAddWidgetRequest by mutableLongStateOf(0L)
+    private var mealEntryWidgetRequest by mutableLongStateOf(0L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        recordQuickAddWidgetRequest(intent)
+        recordMealEntryWidgetRequest(intent)
 
         setContent {
             FoodYouApp(
-                quickAddWidgetRequest = quickAddWidgetRequest,
+                mealEntryWidgetRequest = mealEntryWidgetRequest,
                 onDatabaseBackup = {
                     val intent =
                         Intent(this, DeveloperActivity::class.java).apply {
@@ -33,12 +33,12 @@ class MainActivity : FoodYouAbstractActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        recordQuickAddWidgetRequest(intent)
+        recordMealEntryWidgetRequest(intent)
     }
 
-    private fun recordQuickAddWidgetRequest(intent: Intent?) {
-        if (intent?.action == QuickAddWidgetProvider.ACTION_QUICK_ADD) {
-            quickAddWidgetRequest += 1
+    private fun recordMealEntryWidgetRequest(intent: Intent?) {
+        if (intent?.action == QuickAddWidgetProvider.ACTION_ADD_MEAL) {
+            mealEntryWidgetRequest += 1
         }
     }
 }
