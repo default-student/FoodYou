@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.maksimowiczm.foodyou.common.domain.date.DateProvider
 import com.maksimowiczm.foodyou.app.ui.about.AboutScreen
 import com.maksimowiczm.foodyou.app.ui.database.exportcsvproducts.ExportCsvProductsScreen
 import com.maksimowiczm.foodyou.app.ui.database.externaldatabases.ExternalDatabasesScreen
@@ -42,12 +43,45 @@ import com.maksimowiczm.foodyou.common.domain.measurement.from
 import com.maksimowiczm.foodyou.common.domain.measurement.rawValue
 import com.maksimowiczm.foodyou.common.domain.measurement.type
 import com.maksimowiczm.foodyou.food.domain.entity.FoodId
+import com.maksimowiczm.foodyou.fooddiary.domain.entity.Meal
+import com.maksimowiczm.foodyou.fooddiary.domain.repository.MealRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
 
 @Composable
-fun FoodYouAppNavHost(onDatabaseBackup: () -> Unit, modifier: Modifier = Modifier) {
+fun FoodYouAppNavHost(
+    onDatabaseBackup: () -> Unit,
+    quickAddWidgetRequest: Long = 0L,
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
+    val mealRepository = koinInject<MealRepository>()
+    val dateProvider = koinInject<DateProvider>()
+
+    LaunchedEffect(quickAddWidgetRequest) {
+        if (quickAddWidgetRequest == 0L) return@LaunchedEffect
+
+        val now = dateProvider.now()
+        val meals = mealRepository.observeMeals().first()
+        val selectedMeal =
+            meals.firstOrNull { it.contains(now.time) }
+                ?: meals.filter { it.from <= now.time }.maxByOrNull { it.from }
+                ?: meals.minByOrNull { it.rank }
+
+        if (selectedMeal == null) {
+            navController.navigateSingleTop(MealSetup)
+        } else {
+            navController.navigateSingleTop(
+                FoodDiaryCreateQuickAdd(
+                    epochDay = now.date.toEpochDays(),
+                    mealId = selectedMeal.id,
+                )
+            )
+        }
+    }
 
     NavHost(modifier = modifier, navController = navController, startDestination = Home) {
         forwardBackwardComposable<Home> {
@@ -427,6 +461,13 @@ fun FoodYouAppNavHost(onDatabaseBackup: () -> Unit, modifier: Modifier = Modifie
 @Serializable private data class UpdateRecipe(val recipeId: Long)
 
 @Serializable private data class UpdateProduct(val productId: Long)
+
+private fun Meal.contains(time: LocalTime): Boolean =
+    when {
+        from == to -> true
+        to < from -> time >= from || time <= to
+        else -> time >= from && time <= to
+    }
 
 @Serializable
 private class FoodDiaryCreateEntry(

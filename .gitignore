@@ -16,6 +16,8 @@ local.properties
 .kotlin
 .idea
 *.keystore
+*.jks
+keystore.properties
 *.kdbx
 *.apk
 *.idsig

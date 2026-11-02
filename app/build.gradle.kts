@@ -19,9 +19,16 @@ buildConfig {
     packageName("com.maksimowiczm.foodyou.app")
     className("BuildConfig")
 
-    val versionName = libs.versions.version.name.get()
+    val versionName =
+        providers.gradleProperty("forkVersionName").orNull ?: libs.versions.version.name.get()
     buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
 }
+
+val appVersionName =
+    providers.gradleProperty("forkVersionName").orNull ?: libs.versions.version.name.get()
+val appVersionCode =
+    providers.gradleProperty("forkVersionCode").orNull?.toInt()
+        ?: libs.versions.android.versionCode.get().toInt()
 
 kotlin {
     sourceSets.all {
@@ -125,11 +132,11 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.maksimowiczm.foodyou"
+        applicationId = "com.defaultstudent.foodyou"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = libs.versions.android.versionCode.get().toInt()
-        versionName = libs.versions.version.name.get()
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         manifestPlaceholders["applicationIcon"] = "@mipmap/ic_launcher"
         manifestPlaceholders["applicationRoundIcon"] = "@mipmap/ic_launcher_round"
