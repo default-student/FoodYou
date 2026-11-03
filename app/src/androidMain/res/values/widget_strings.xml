@@ -1,6 +1,11 @@
 <resources>
     <string name="quick_add_widget_name">Quick meal entry</string>
     <string name="quick_add_widget_title">Add a meal</string>
-    <string name="quick_add_widget_subtitle">Tap to get started</string>
+    <string name="quick_add_widget_energy_initial">Today: 0 kcal</string>
+    <string name="quick_add_widget_energy">Today: %1$d kcal</string>
     <string name="quick_add_widget_description">Opens food search for the meal matching the current time.</string>
+    <string name="meal_reminder_channel_id" translatable="false">meal_reminders</string>
+    <string name="meal_reminder_channel_name">Meal reminders</string>
+    <string name="meal_reminder_title">Track %1$s</string>
+    <string name="meal_reminder_body">Add what you ate. Today: %1$d kcal consumed.</string>
 </resources>

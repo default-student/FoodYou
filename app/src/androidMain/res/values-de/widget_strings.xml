@@ -1,6 +1,10 @@
 <resources>
     <string name="quick_add_widget_name">Mahlzeit schnell eintragen</string>
     <string name="quick_add_widget_title">Mahlzeit eintragen</string>
-    <string name="quick_add_widget_subtitle">Tippen, um direkt loszulegen</string>
+    <string name="quick_add_widget_energy_initial">Heute: 0 kcal</string>
+    <string name="quick_add_widget_energy">Heute: %1$d kcal</string>
     <string name="quick_add_widget_description">Öffnet die Lebensmittelsuche für die aktuell passende Mahlzeit.</string>
+    <string name="meal_reminder_channel_name">Mahlzeitenerinnerungen</string>
+    <string name="meal_reminder_title">%1$s eintragen</string>
+    <string name="meal_reminder_body">Trage ein, was du gegessen hast. Heute: %1$d kcal.</string>
 </resources>

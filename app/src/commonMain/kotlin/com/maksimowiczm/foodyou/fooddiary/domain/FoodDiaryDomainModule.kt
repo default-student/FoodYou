@@ -3,6 +3,7 @@ package com.maksimowiczm.foodyou.fooddiary.domain
 import com.maksimowiczm.foodyou.common.infrastructure.koin.userPreferencesRepository
 import com.maksimowiczm.foodyou.fooddiary.domain.usecase.CreateFoodDiaryEntryUseCase
 import com.maksimowiczm.foodyou.fooddiary.domain.usecase.ObserveDiaryMealsUseCase
+import com.maksimowiczm.foodyou.fooddiary.domain.usecase.ObserveDailyEnergyUseCase
 import com.maksimowiczm.foodyou.fooddiary.domain.usecase.UnpackFoodDiaryEntryUseCase
 import com.maksimowiczm.foodyou.fooddiary.domain.usecase.UpdateFoodDiaryEntryUseCase
 import org.koin.core.module.Module
@@ -12,6 +13,7 @@ internal fun Module.foodDiaryDomainModule() {
     factoryOf(::CreateFoodDiaryEntryUseCase)
     factoryOf(::UnpackFoodDiaryEntryUseCase)
     factoryOf(::UpdateFoodDiaryEntryUseCase)
+    factoryOf(::ObserveDailyEnergyUseCase)
 
     factory {
         ObserveDiaryMealsUseCase(

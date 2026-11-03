@@ -21,11 +21,12 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/quick_add_widget_energy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/quick_add_widget_subtitle"
+        android:text="@string/quick_add_widget_energy_initial"
         android:textColor="@android:color/white"
         android:textSize="13sp" />
 </LinearLayout>

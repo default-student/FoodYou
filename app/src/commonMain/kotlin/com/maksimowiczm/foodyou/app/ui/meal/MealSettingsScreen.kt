@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Reorder
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -52,7 +53,11 @@ import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
-fun MealSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun MealSettingsScreen(
+    onBack: () -> Unit,
+    onRequestNotificationPermission: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     val viewModel: MealSettingsViewModel = koinViewModel()
 
     val meals = viewModel.meals.collectAsStateWithLifecycle().value
@@ -62,6 +67,7 @@ fun MealSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     } else {
         MealSettingsScreen(
             onBack = onBack,
+            onRequestNotificationPermission = onRequestNotificationPermission,
             onDelete = viewModel::deleteMeal,
             onUpdate = { mealId, state ->
                 val model = state.intoMealModel(mealId)
@@ -81,6 +87,7 @@ fun MealSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 private fun MealSettingsScreen(
     onBack: () -> Unit,
+    onRequestNotificationPermission: () -> Unit,
     onDelete: (MealModel) -> Unit,
     onUpdate: (mealId: Long, MealCardState) -> Unit,
     onCreate: (MealCardState) -> Unit,
@@ -112,6 +119,12 @@ private fun MealSettingsScreen(
                 title = { Text(stringResource(Res.string.headline_meals)) },
                 navigationIcon = { ArrowBackIconButton(onBack) },
                 actions = {
+                    IconButton(onClick = onRequestNotificationPermission) {
+                        Icon(
+                            imageVector = Icons.Default.NotificationsActive,
+                            contentDescription = stringResource(Res.string.meal_reminder_permission),
+                        )
+                    }
                     if (isReordering) {
                         IconButton(
                             onClick = {

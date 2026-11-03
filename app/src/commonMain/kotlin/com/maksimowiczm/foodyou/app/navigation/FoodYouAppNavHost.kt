@@ -35,6 +35,7 @@ import com.maksimowiczm.foodyou.app.ui.meal.MealSettingsScreen
 import com.maksimowiczm.foodyou.app.ui.personalization.PersonalizationScreen
 import com.maksimowiczm.foodyou.app.ui.personalization.PersonalizeNutritionFactsScreen
 import com.maksimowiczm.foodyou.app.ui.settings.SettingsScreen
+import com.maksimowiczm.foodyou.app.ui.statistics.StatisticsScreen
 import com.maksimowiczm.foodyou.app.ui.sponsor.SponsorScreen
 import com.maksimowiczm.foodyou.app.ui.theme.ThemeScreen
 import com.maksimowiczm.foodyou.common.domain.measurement.Measurement
@@ -55,14 +56,26 @@ import org.koin.compose.koinInject
 fun FoodYouAppNavHost(
     onDatabaseBackup: () -> Unit,
     mealEntryWidgetRequest: Long = 0L,
+    mealEntryDateEpochDay: Long? = null,
+    mealEntryMealId: Long? = null,
+    onRequestNotificationPermission: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
     val mealRepository = koinInject<MealRepository>()
     val dateProvider = koinInject<DateProvider>()
 
-    LaunchedEffect(mealEntryWidgetRequest) {
+    LaunchedEffect(mealEntryWidgetRequest, mealEntryDateEpochDay, mealEntryMealId) {
         if (mealEntryWidgetRequest == 0L) return@LaunchedEffect
+
+        if (mealEntryDateEpochDay != null && mealEntryMealId != null) {
+            if (mealRepository.observeMeal(mealEntryMealId).first() != null) {
+                navController.navigateSingleTop(FoodDiarySearch(mealEntryDateEpochDay, mealEntryMealId))
+            } else {
+                navController.navigateSingleTop(MealSetup)
+            }
+            return@LaunchedEffect
+        }
 
         val now = dateProvider.now()
         val meals = mealRepository.observeMeals().first()
@@ -87,6 +100,7 @@ fun FoodYouAppNavHost(
         forwardBackwardComposable<Home> {
             HomeScreen(
                 onSettings = { navController.navigateSingleTop(Settings) },
+                onStatistics = { navController.navigateSingleTop(Statistics) },
                 onTitle = { navController.navigateSingleTop(About) },
                 onMealCardLongClick = { navController.navigateSingleTop(MealsPersonalization) },
                 onMealCardAddClick = { epochDay, mealId ->
@@ -116,6 +130,9 @@ fun FoodYouAppNavHost(
                 },
             )
         }
+        forwardBackwardComposable<Statistics> {
+            StatisticsScreen(onBack = { navController.popBackStackInclusive<Statistics>() })
+        }
         forwardBackwardComposable<Settings> {
             SettingsScreen(
                 onBack = { navController.popBackStackInclusive<Settings>() },
@@ -138,7 +155,10 @@ fun FoodYouAppNavHost(
             SponsorScreen(onBack = { navController.popBackStackInclusive<Sponsor>() })
         }
         forwardBackwardComposable<MealSetup> {
-            MealSettingsScreen(onBack = { navController.popBackStackInclusive<MealSetup>() })
+            MealSettingsScreen(
+                onBack = { navController.popBackStackInclusive<MealSetup>() },
+                onRequestNotificationPermission = onRequestNotificationPermission,
+            )
         }
         forwardBackwardComposable<Goals> {
             val (epochDay) = it.toRoute<Goals>()
@@ -429,6 +449,8 @@ fun FoodYouAppNavHost(
 @Serializable private object Sponsor
 
 @Serializable private object MealSetup
+
+@Serializable private object Statistics
 
 @Serializable private data class Goals(val epochDay: Long)
 
