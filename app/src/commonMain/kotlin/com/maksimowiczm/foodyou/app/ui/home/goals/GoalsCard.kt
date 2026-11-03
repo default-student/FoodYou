@@ -306,7 +306,7 @@ private fun alpacaForDay(
     if (energyGoal <= 0) return AlpacaState.NO_GOAL
 
     val energyRatio = energy.toDouble() / energyGoal
-    if (energyRatio in 0.95..1.05 && proteinsGoal > 0 && proteins >= proteinsGoal) {
+    if (energyRatio in 0.90..1.30 && proteinsGoal > 0 && proteins >= proteinsGoal) {
         return AlpacaState.MUSCULAR
     }
 
