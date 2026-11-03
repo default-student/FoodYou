@@ -229,6 +229,14 @@
     <string name="positive_goal_reached">Goal reached</string>
     <string name="positive_ok">OK</string>
 
+    <string name="alpaca_very_low">Calories are far below the daily goal</string>
+    <string name="alpaca_low">Calories are slightly below the daily goal</string>
+    <string name="alpaca_goal_unavailable">Daily calorie goal is unavailable</string>
+    <string name="alpaca_on_target">Calories are within the daily goal range</string>
+    <string name="alpaca_muscular">Calories are within the daily goal range and the protein goal is met</string>
+    <string name="alpaca_slightly_over">Calories are slightly above the daily goal</string>
+    <string name="alpaca_well_over">Calories are far above the daily goal</string>
+
     <plurals name="negative_exceeded_by_calories">
         <item quantity="one">Exceeded by %1$d calorie</item>
         <item quantity="other">Exceeded by %1$d calories</item>

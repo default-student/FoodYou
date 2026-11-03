@@ -208,6 +208,13 @@
     <string name="error_not_a_barcode">Kein Barcode</string>
     <string name="positive_goal_reached">Ziel erreicht</string>
     <string name="positive_ok">OK</string>
+    <string name="alpaca_very_low">Kalorien deutlich unter dem Tagesziel</string>
+    <string name="alpaca_low">Kalorien knapp unter dem Tagesziel</string>
+    <string name="alpaca_goal_unavailable">Kein Tagesziel für Kalorien festgelegt</string>
+    <string name="alpaca_on_target">Kalorien im Bereich des Tagesziels</string>
+    <string name="alpaca_muscular">Kalorien im Bereich des Tagesziels und Proteinziel erreicht</string>
+    <string name="alpaca_slightly_over">Kalorien etwas über dem Tagesziel</string>
+    <string name="alpaca_well_over">Kalorien deutlich über dem Tagesziel</string>
     <plurals name="negative_exceeded_by_calories">
         <item quantity="one">Um %1$d Kalorien überschritten</item>
         <item quantity="other">Um %1$d Kalorien überschritten</item>

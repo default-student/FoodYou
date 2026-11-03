@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -40,6 +42,16 @@ import com.maksimowiczm.foodyou.settings.domain.entity.NutrientsOrder
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.shimmer
 import foodyou.app.generated.resources.*
+import com.maksimowiczm.foodyou.app.generated.resources.Res as AppRes
+import com.maksimowiczm.foodyou.app.generated.resources.alpaca_a_bit_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.alpaca_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.alpaca_muscular
+import com.maksimowiczm.foodyou.app.generated.resources.alpaca_on_target
+import com.maksimowiczm.foodyou.app.generated.resources.alpaca_slightly_over
+import com.maksimowiczm.foodyou.app.generated.resources.alpaca_well_over
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -97,32 +109,28 @@ internal fun GoalsCard(
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val proteinsPercentage =
-        animateFloatAsState(
-                targetValue = proteins.toFloat() / proteinsGoal,
-                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-            )
-            .value
+    val proteinsPercentage = animateFloatAsState(
+        targetValue = safeProgress(proteins, proteinsGoal),
+        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+    ).value
 
-    val carbsPercentage =
-        animateFloatAsState(
-                targetValue = carbohydrates.toFloat() / carbohydratesGoal,
-                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-            )
-            .value
+    val carbsPercentage = animateFloatAsState(
+        targetValue = safeProgress(carbohydrates, carbohydratesGoal),
+        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+    ).value
 
-    val fatsPercentage =
-        animateFloatAsState(
-                targetValue = fats.toFloat() / fatsGoal,
-                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-            )
-            .value
+    val fatsPercentage = animateFloatAsState(
+        targetValue = safeProgress(fats, fatsGoal),
+        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+    ).value
 
     FoodYouHomeCard(modifier = modifier, onClick = onClick, onLongClick = onLongClick) {
         Column(modifier = Modifier.padding(16.dp)) {
             GoalsCardContent(
                 energy = energy,
                 energyGoal = energyGoal,
+                proteins = proteins,
+                proteinsGoal = proteinsGoal,
                 proteinsPercentage = proteinsPercentage,
                 carbsPercentage = carbsPercentage,
                 fatsPercentage = fatsPercentage,
@@ -156,6 +164,8 @@ internal fun GoalsCard(
 private fun GoalsCardContent(
     energy: Int,
     energyGoal: Int,
+    proteins: Int,
+    proteinsGoal: Int,
     proteinsPercentage: Float,
     carbsPercentage: Float,
     fatsPercentage: Float,
@@ -168,6 +178,9 @@ private fun GoalsCardContent(
     val typography = MaterialTheme.typography
     val colorScheme = MaterialTheme.colorScheme
     val outlineColor = MaterialTheme.colorScheme.outline
+    val alpacaState = remember(energy, energyGoal, proteins, proteinsGoal) {
+        alpacaForDay(energy, energyGoal, proteins, proteinsGoal)
+    }
 
     val caloriesString = buildAnnotatedString {
         withStyle(
@@ -226,6 +239,13 @@ private fun GoalsCardContent(
         }
 
         Row(modifier = Modifier.height(64.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Image(
+                painter = painterResource(alpacaState.drawable),
+                contentDescription = stringResource(alpacaState.contentDescription),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(width = 56.dp, height = 64.dp),
+            )
+
             nutrientsOrder.forEach { field ->
                 when (field) {
                     NutrientsOrder.Proteins ->
@@ -258,6 +278,44 @@ private fun GoalsCardContent(
                 }
             }
         }
+    }
+}
+
+private fun safeProgress(value: Int, goal: Int): Float =
+    if (goal > 0) (value.toFloat() / goal).coerceAtLeast(0f) else 0f
+
+private enum class AlpacaState(
+    val drawable: DrawableResource,
+    val contentDescription: StringResource,
+) {
+    VERY_LOW(AppRes.drawable.alpaca_hungry, Res.string.alpaca_very_low),
+    LOW(AppRes.drawable.alpaca_a_bit_hungry, Res.string.alpaca_low),
+    NO_GOAL(AppRes.drawable.alpaca_on_target, Res.string.alpaca_goal_unavailable),
+    ON_TARGET(AppRes.drawable.alpaca_on_target, Res.string.alpaca_on_target),
+    MUSCULAR(AppRes.drawable.alpaca_muscular, Res.string.alpaca_muscular),
+    SLIGHTLY_OVER(AppRes.drawable.alpaca_slightly_over, Res.string.alpaca_slightly_over),
+    WELL_OVER(AppRes.drawable.alpaca_well_over, Res.string.alpaca_well_over),
+}
+
+private fun alpacaForDay(
+    energy: Int,
+    energyGoal: Int,
+    proteins: Int,
+    proteinsGoal: Int,
+): AlpacaState {
+    if (energyGoal <= 0) return AlpacaState.NO_GOAL
+
+    val energyRatio = energy.toDouble() / energyGoal
+    if (energyRatio in 0.95..1.05 && proteinsGoal > 0 && proteins >= proteinsGoal) {
+        return AlpacaState.MUSCULAR
+    }
+
+    return when {
+        energyRatio < 0.80 -> AlpacaState.VERY_LOW
+        energyRatio < 0.95 -> AlpacaState.LOW
+        energyRatio <= 1.05 -> AlpacaState.ON_TARGET
+        energyRatio <= 1.20 -> AlpacaState.SLIGHTLY_OVER
+        else -> AlpacaState.WELL_OVER
     }
 }
 
