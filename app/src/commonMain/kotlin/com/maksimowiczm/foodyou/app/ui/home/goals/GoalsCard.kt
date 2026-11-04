@@ -311,7 +311,7 @@ private fun alpacaForDay(
     }
 
     return when {
-        energyRatio < 0.80 -> AlpacaState.VERY_LOW
+        energyRatio < 0.35 -> AlpacaState.VERY_LOW
         energyRatio < 0.95 -> AlpacaState.LOW
         energyRatio <= 1.05 -> AlpacaState.ON_TARGET
         energyRatio <= 1.20 -> AlpacaState.SLIGHTLY_OVER
