@@ -236,6 +236,15 @@
     <string name="alpaca_muscular">Calories are within the daily goal range and the protein goal is met</string>
     <string name="alpaca_slightly_over">Calories are slightly above the daily goal</string>
     <string name="alpaca_well_over">Calories are far above the daily goal</string>
+    <string name="headline_goal_companion">Goals companion</string>
+    <string name="description_goal_companion">Choose which little companion appears beside your progress bars.</string>
+    <string name="goal_companion_alpaca">Alpaca</string>
+    <string name="goal_companion_turtle">Turtle</string>
+    <string name="goal_companion_cat">Cat</string>
+    <string name="goal_companion_goose">Goose</string>
+    <string name="goal_companion_duck">Duck</string>
+    <string name="goal_companion_gorilla">Gorilla</string>
+    <string name="goal_companion_none">None</string>
 
     <plurals name="negative_exceeded_by_calories">
         <item quantity="one">Exceeded by %1$d calorie</item>

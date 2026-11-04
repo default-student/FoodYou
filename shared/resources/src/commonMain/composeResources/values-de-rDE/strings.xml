@@ -215,6 +215,15 @@
     <string name="alpaca_muscular">Kalorien im Bereich des Tagesziels und Proteinziel erreicht</string>
     <string name="alpaca_slightly_over">Kalorien etwas über dem Tagesziel</string>
     <string name="alpaca_well_over">Kalorien deutlich über dem Tagesziel</string>
+    <string name="headline_goal_companion">Begleiter für Ziele</string>
+    <string name="description_goal_companion">Wähle, welches Tier neben den Fortschrittsbalken erscheint.</string>
+    <string name="goal_companion_alpaca">Alpaka</string>
+    <string name="goal_companion_turtle">Schildkröte</string>
+    <string name="goal_companion_cat">Katze</string>
+    <string name="goal_companion_goose">Gans</string>
+    <string name="goal_companion_duck">Ente</string>
+    <string name="goal_companion_gorilla">Gorilla</string>
+    <string name="goal_companion_none">Keins</string>
     <plurals name="negative_exceeded_by_calories">
         <item quantity="one">Um %1$d Kalorien überschritten</item>
         <item quantity="other">Um %1$d Kalorien überschritten</item>

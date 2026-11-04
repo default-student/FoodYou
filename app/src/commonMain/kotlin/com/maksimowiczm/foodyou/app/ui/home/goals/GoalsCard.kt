@@ -39,6 +39,7 @@ import com.maksimowiczm.foodyou.app.ui.home.shared.FoodYouHomeCard
 import com.maksimowiczm.foodyou.app.ui.home.shared.HomeState
 import com.maksimowiczm.foodyou.common.compose.extension.toDp
 import com.maksimowiczm.foodyou.settings.domain.entity.NutrientsOrder
+import com.maksimowiczm.foodyou.settings.domain.entity.GoalCompanion
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.shimmer
 import foodyou.app.generated.resources.*
@@ -49,6 +50,36 @@ import com.maksimowiczm.foodyou.app.generated.resources.alpaca_muscular
 import com.maksimowiczm.foodyou.app.generated.resources.alpaca_on_target
 import com.maksimowiczm.foodyou.app.generated.resources.alpaca_slightly_over
 import com.maksimowiczm.foodyou.app.generated.resources.alpaca_well_over
+import com.maksimowiczm.foodyou.app.generated.resources.turtle_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.turtle_a_bit_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.turtle_on_target
+import com.maksimowiczm.foodyou.app.generated.resources.turtle_slightly_over
+import com.maksimowiczm.foodyou.app.generated.resources.turtle_well_over
+import com.maksimowiczm.foodyou.app.generated.resources.turtle_muscular
+import com.maksimowiczm.foodyou.app.generated.resources.cat_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.cat_a_bit_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.cat_on_target
+import com.maksimowiczm.foodyou.app.generated.resources.cat_slightly_over
+import com.maksimowiczm.foodyou.app.generated.resources.cat_well_over
+import com.maksimowiczm.foodyou.app.generated.resources.cat_muscular
+import com.maksimowiczm.foodyou.app.generated.resources.goose_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.goose_a_bit_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.goose_on_target
+import com.maksimowiczm.foodyou.app.generated.resources.goose_slightly_over
+import com.maksimowiczm.foodyou.app.generated.resources.goose_well_over
+import com.maksimowiczm.foodyou.app.generated.resources.goose_muscular
+import com.maksimowiczm.foodyou.app.generated.resources.duck_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.duck_a_bit_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.duck_on_target
+import com.maksimowiczm.foodyou.app.generated.resources.duck_slightly_over
+import com.maksimowiczm.foodyou.app.generated.resources.duck_well_over
+import com.maksimowiczm.foodyou.app.generated.resources.duck_muscular
+import com.maksimowiczm.foodyou.app.generated.resources.gorilla_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.gorilla_a_bit_hungry
+import com.maksimowiczm.foodyou.app.generated.resources.gorilla_on_target
+import com.maksimowiczm.foodyou.app.generated.resources.gorilla_slightly_over
+import com.maksimowiczm.foodyou.app.generated.resources.gorilla_well_over
+import com.maksimowiczm.foodyou.app.generated.resources.gorilla_muscular
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -67,6 +98,7 @@ internal fun GoalsCard(
 
     val model = viewModel.model.collectAsStateWithLifecycle().value
     val expand by viewModel.expandGoalsCard.collectAsStateWithLifecycle()
+    val companion by viewModel.goalCompanion.collectAsStateWithLifecycle()
 
     if (model == null) {
         GoalsCardSkeleton(
@@ -83,6 +115,7 @@ internal fun GoalsCard(
             energyGoal = model.energyGoal,
             proteins = model.proteins,
             proteinsGoal = model.proteinsGoal,
+            companion = companion,
             carbohydrates = model.carbohydrates,
             carbohydratesGoal = model.carbohydratesGoal,
             fats = model.fats,
@@ -105,6 +138,7 @@ internal fun GoalsCard(
     carbohydratesGoal: Int,
     fats: Int,
     fatsGoal: Int,
+    companion: GoalCompanion = GoalCompanion.Alpaca,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -131,6 +165,7 @@ internal fun GoalsCard(
                 energyGoal = energyGoal,
                 proteins = proteins,
                 proteinsGoal = proteinsGoal,
+                companion = companion,
                 proteinsPercentage = proteinsPercentage,
                 carbsPercentage = carbsPercentage,
                 fatsPercentage = fatsPercentage,
@@ -166,6 +201,7 @@ private fun GoalsCardContent(
     energyGoal: Int,
     proteins: Int,
     proteinsGoal: Int,
+    companion: GoalCompanion,
     proteinsPercentage: Float,
     carbsPercentage: Float,
     fatsPercentage: Float,
@@ -178,8 +214,8 @@ private fun GoalsCardContent(
     val typography = MaterialTheme.typography
     val colorScheme = MaterialTheme.colorScheme
     val outlineColor = MaterialTheme.colorScheme.outline
-    val alpacaState = remember(energy, energyGoal, proteins, proteinsGoal) {
-        alpacaForDay(energy, energyGoal, proteins, proteinsGoal)
+    val mascotState = remember(energy, energyGoal, proteins, proteinsGoal) {
+        mascotStateForDay(energy, energyGoal, proteins, proteinsGoal)
     }
 
     val caloriesString = buildAnnotatedString {
@@ -239,12 +275,14 @@ private fun GoalsCardContent(
         }
 
         Row(modifier = Modifier.height(64.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Image(
-                painter = painterResource(alpacaState.drawable),
-                contentDescription = stringResource(alpacaState.contentDescription),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.size(width = 56.dp, height = 64.dp),
-            )
+            mascotState.drawableFor(companion)?.let { drawable ->
+                Image(
+                    painter = painterResource(drawable),
+                    contentDescription = stringResource(mascotState.contentDescription),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(width = 56.dp, height = 64.dp),
+                )
+            }
 
             nutrientsOrder.forEach { field ->
                 when (field) {
@@ -284,38 +322,102 @@ private fun GoalsCardContent(
 private fun safeProgress(value: Int, goal: Int): Float =
     if (goal > 0) (value.toFloat() / goal).coerceAtLeast(0f) else 0f
 
-private enum class AlpacaState(
-    val drawable: DrawableResource,
+private enum class GoalMascotState(
     val contentDescription: StringResource,
 ) {
-    VERY_LOW(AppRes.drawable.alpaca_hungry, Res.string.alpaca_very_low),
-    LOW(AppRes.drawable.alpaca_a_bit_hungry, Res.string.alpaca_low),
-    NO_GOAL(AppRes.drawable.alpaca_on_target, Res.string.alpaca_goal_unavailable),
-    ON_TARGET(AppRes.drawable.alpaca_on_target, Res.string.alpaca_on_target),
-    MUSCULAR(AppRes.drawable.alpaca_muscular, Res.string.alpaca_muscular),
-    SLIGHTLY_OVER(AppRes.drawable.alpaca_slightly_over, Res.string.alpaca_slightly_over),
-    WELL_OVER(AppRes.drawable.alpaca_well_over, Res.string.alpaca_well_over),
+    VERY_LOW(Res.string.alpaca_very_low),
+    LOW(Res.string.alpaca_low),
+    NO_GOAL(Res.string.alpaca_goal_unavailable),
+    ON_TARGET(Res.string.alpaca_on_target),
+    MUSCULAR(Res.string.alpaca_muscular),
+    SLIGHTLY_OVER(Res.string.alpaca_slightly_over),
+    WELL_OVER(Res.string.alpaca_well_over),
 }
 
-private fun alpacaForDay(
+private fun GoalMascotState.drawableFor(companion: GoalCompanion): DrawableResource? =
+    when (companion) {
+        GoalCompanion.None -> null
+        GoalCompanion.Alpaca ->
+            when (this) {
+                GoalMascotState.VERY_LOW -> AppRes.drawable.alpaca_hungry
+                GoalMascotState.LOW -> AppRes.drawable.alpaca_a_bit_hungry
+                GoalMascotState.NO_GOAL,
+                GoalMascotState.ON_TARGET -> AppRes.drawable.alpaca_on_target
+                GoalMascotState.MUSCULAR -> AppRes.drawable.alpaca_muscular
+                GoalMascotState.SLIGHTLY_OVER -> AppRes.drawable.alpaca_slightly_over
+                GoalMascotState.WELL_OVER -> AppRes.drawable.alpaca_well_over
+            }
+        GoalCompanion.Turtle ->
+            when (this) {
+                GoalMascotState.VERY_LOW -> AppRes.drawable.turtle_hungry
+                GoalMascotState.LOW -> AppRes.drawable.turtle_a_bit_hungry
+                GoalMascotState.NO_GOAL,
+                GoalMascotState.ON_TARGET -> AppRes.drawable.turtle_on_target
+                GoalMascotState.MUSCULAR -> AppRes.drawable.turtle_muscular
+                GoalMascotState.SLIGHTLY_OVER -> AppRes.drawable.turtle_slightly_over
+                GoalMascotState.WELL_OVER -> AppRes.drawable.turtle_well_over
+            }
+        GoalCompanion.Cat ->
+            when (this) {
+                GoalMascotState.VERY_LOW -> AppRes.drawable.cat_hungry
+                GoalMascotState.LOW -> AppRes.drawable.cat_a_bit_hungry
+                GoalMascotState.NO_GOAL,
+                GoalMascotState.ON_TARGET -> AppRes.drawable.cat_on_target
+                GoalMascotState.MUSCULAR -> AppRes.drawable.cat_muscular
+                GoalMascotState.SLIGHTLY_OVER -> AppRes.drawable.cat_slightly_over
+                GoalMascotState.WELL_OVER -> AppRes.drawable.cat_well_over
+            }
+        GoalCompanion.Goose ->
+            when (this) {
+                GoalMascotState.VERY_LOW -> AppRes.drawable.goose_hungry
+                GoalMascotState.LOW -> AppRes.drawable.goose_a_bit_hungry
+                GoalMascotState.NO_GOAL,
+                GoalMascotState.ON_TARGET -> AppRes.drawable.goose_on_target
+                GoalMascotState.MUSCULAR -> AppRes.drawable.goose_muscular
+                GoalMascotState.SLIGHTLY_OVER -> AppRes.drawable.goose_slightly_over
+                GoalMascotState.WELL_OVER -> AppRes.drawable.goose_well_over
+            }
+        GoalCompanion.Duck ->
+            when (this) {
+                GoalMascotState.VERY_LOW -> AppRes.drawable.duck_hungry
+                GoalMascotState.LOW -> AppRes.drawable.duck_a_bit_hungry
+                GoalMascotState.NO_GOAL,
+                GoalMascotState.ON_TARGET -> AppRes.drawable.duck_on_target
+                GoalMascotState.MUSCULAR -> AppRes.drawable.duck_muscular
+                GoalMascotState.SLIGHTLY_OVER -> AppRes.drawable.duck_slightly_over
+                GoalMascotState.WELL_OVER -> AppRes.drawable.duck_well_over
+            }
+        GoalCompanion.Gorilla ->
+            when (this) {
+                GoalMascotState.VERY_LOW -> AppRes.drawable.gorilla_hungry
+                GoalMascotState.LOW -> AppRes.drawable.gorilla_a_bit_hungry
+                GoalMascotState.NO_GOAL,
+                GoalMascotState.ON_TARGET -> AppRes.drawable.gorilla_on_target
+                GoalMascotState.MUSCULAR -> AppRes.drawable.gorilla_muscular
+                GoalMascotState.SLIGHTLY_OVER -> AppRes.drawable.gorilla_slightly_over
+                GoalMascotState.WELL_OVER -> AppRes.drawable.gorilla_well_over
+            }
+    }
+
+private fun mascotStateForDay(
     energy: Int,
     energyGoal: Int,
     proteins: Int,
     proteinsGoal: Int,
-): AlpacaState {
-    if (energyGoal <= 0) return AlpacaState.NO_GOAL
+): GoalMascotState {
+    if (energyGoal <= 0) return GoalMascotState.NO_GOAL
 
     val energyRatio = energy.toDouble() / energyGoal
     if (energyRatio in 0.90..1.30 && proteinsGoal > 0 && proteins >= proteinsGoal) {
-        return AlpacaState.MUSCULAR
+        return GoalMascotState.MUSCULAR
     }
 
     return when {
-        energyRatio < 0.35 -> AlpacaState.VERY_LOW
-        energyRatio < 0.95 -> AlpacaState.LOW
-        energyRatio <= 1.05 -> AlpacaState.ON_TARGET
-        energyRatio <= 1.20 -> AlpacaState.SLIGHTLY_OVER
-        else -> AlpacaState.WELL_OVER
+        energyRatio < 0.35 -> GoalMascotState.VERY_LOW
+        energyRatio < 0.95 -> GoalMascotState.LOW
+        energyRatio <= 1.05 -> GoalMascotState.ON_TARGET
+        energyRatio <= 1.20 -> GoalMascotState.SLIGHTLY_OVER
+        else -> GoalMascotState.WELL_OVER
     }
 }
 

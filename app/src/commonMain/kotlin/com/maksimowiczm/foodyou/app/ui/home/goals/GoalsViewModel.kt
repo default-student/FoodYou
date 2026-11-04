@@ -7,6 +7,7 @@ import com.maksimowiczm.foodyou.common.domain.food.sum
 import com.maksimowiczm.foodyou.common.domain.userpreferences.UserPreferencesRepository
 import com.maksimowiczm.foodyou.fooddiary.domain.usecase.ObserveDiaryMealsUseCase
 import com.maksimowiczm.foodyou.goals.domain.repository.GoalsRepository
+import com.maksimowiczm.foodyou.settings.domain.entity.GoalCompanion
 import com.maksimowiczm.foodyou.settings.domain.entity.Settings
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +45,18 @@ internal class GoalsViewModel(
 
     fun setExpandGoalsCard(expand: Boolean) {
         viewModelScope.launch { settingsRepository.update { copy(expandGoalCard = expand) } }
+    }
+
+    private val _goalCompanion = settingsRepository.observe().map { it.goalCompanion }
+    val goalCompanion: StateFlow<GoalCompanion> =
+        _goalCompanion.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(2_000),
+            initialValue = runBlocking { _goalCompanion.first() },
+        )
+
+    fun setGoalCompanion(companion: GoalCompanion) {
+        viewModelScope.launch { settingsRepository.update { copy(goalCompanion = companion) } }
     }
 
     val model: StateFlow<DaySummaryModel?> =

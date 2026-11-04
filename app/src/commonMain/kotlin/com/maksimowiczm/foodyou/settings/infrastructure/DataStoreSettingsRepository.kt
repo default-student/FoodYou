@@ -11,6 +11,7 @@ import com.maksimowiczm.foodyou.common.infrastructure.datastore.AbstractDataStor
 import com.maksimowiczm.foodyou.common.infrastructure.datastore.set
 import com.maksimowiczm.foodyou.settings.domain.entity.AppLaunchInfo
 import com.maksimowiczm.foodyou.settings.domain.entity.EnergyFormat
+import com.maksimowiczm.foodyou.settings.domain.entity.GoalCompanion
 import com.maksimowiczm.foodyou.settings.domain.entity.HomeCard
 import com.maksimowiczm.foodyou.settings.domain.entity.NutrientsOrder
 import com.maksimowiczm.foodyou.settings.domain.entity.Settings
@@ -30,6 +31,7 @@ internal class DataStoreSettingsRepository(dataStore: DataStore<Preferences>) :
             onboardingFinished = this[SettingsPreferencesKeys.onboardingFinished] ?: false,
             energyFormat = this.getEnergyFormat(SettingsPreferencesKeys.energyFormat),
             appLaunchInfo = this.getAppLaunchInfo(),
+            goalCompanion = this.getGoalCompanion(SettingsPreferencesKeys.goalCompanion),
         )
 
     override fun MutablePreferences.applyUserPreferences(updated: Settings) {
@@ -42,6 +44,7 @@ internal class DataStoreSettingsRepository(dataStore: DataStore<Preferences>) :
         this[SettingsPreferencesKeys.expandGoalCard] = updated.expandGoalCard
         this[SettingsPreferencesKeys.onboardingFinished] = updated.onboardingFinished
         setEnergyFormat(SettingsPreferencesKeys.energyFormat, updated.energyFormat)
+        this[SettingsPreferencesKeys.goalCompanion] = updated.goalCompanion.name
         setAppLaunchInfo(updated.appLaunchInfo)
     }
 }
@@ -78,6 +81,10 @@ private fun MutablePreferences.setEnergyFormat(key: Preferences.Key<Int>, value:
 private fun Preferences.getEnergyFormat(key: Preferences.Key<Int>): EnergyFormat =
     runCatching { EnergyFormat.entries[this[key] ?: EnergyFormat.DEFAULT.ordinal] }
         .getOrElse { EnergyFormat.DEFAULT }
+
+private fun Preferences.getGoalCompanion(key: Preferences.Key<String>): GoalCompanion =
+    runCatching { GoalCompanion.valueOf(this[key] ?: GoalCompanion.Alpaca.name) }
+        .getOrDefault(GoalCompanion.Alpaca)
 
 private fun Preferences.getAppLaunchInfo(): AppLaunchInfo =
     AppLaunchInfo(
@@ -133,6 +140,7 @@ private object SettingsPreferencesKeys {
     val expandGoalCard = booleanPreferencesKey("settings:expandGoalCard")
     val onboardingFinished = booleanPreferencesKey("settings:onboardingFinished")
     val energyFormat = intPreferencesKey("settings:energyFormat")
+    val goalCompanion = stringPreferencesKey("settings:goalCompanion")
     val firstLaunchEpoch = longPreferencesKey("first_launch_epoch")
     val firstLaunchCurrentVersionName = stringPreferencesKey("first_launch_current_version_name")
     val firstLaunchCurrentVersionEpoch = longPreferencesKey("first_launch_current_version_epoch")
